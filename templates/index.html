@@ -1,9 +1,42 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="container">
-    <h1>Hello {{ name }}!</h1>
-    <p>The local date and time is {{ moment(current_time).format('LLLL') }}.</p>
-    <p>That was {{ moment(current_time).fromNow() }}.</p>
-  </div>
+  {% if name %}
+    {% if is_uoft %}
+      <h2>Hello, {{ name }}!</h2>
+      <p class="lead">Your UofT email is <strong>{{ email }}</strong>.</p>
+    {% else %}
+      <h2>Hello, {{ name }}!</h2>
+      <p class="lead">Please use your UofT email.</p>
+    {% endif %}
+    <hr>
+  {% else %}
+    <h2>Hello, Stranger!</h2>
+  {% endif %}
+
+  <p>The local date and time is {{ moment(current_time).format('LLLL') }}.</p>
+  <p>That was {{ moment(current_time).fromNow() }}.</p>
+
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {{ form.name.label(class="form-label") }}
+      {{ form.name(class="form-control") }}
+      {% for e in form.name.errors %}
+        <div class="text-danger small">{{ e }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="mb-3">
+      {{ form.email.label(class="form-label") }}
+      {{ form.email(class="form-control") }}
+      {% for e in form.email.errors %}
+        <div class="text-danger small">{{ e }}</div>
+      {% endfor %}
+    </div>
+
+    {{ form.submit(class="btn btn-primary") }}
+  </form>
 {% endblock %}
+
