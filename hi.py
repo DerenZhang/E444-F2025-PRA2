@@ -14,7 +14,7 @@ class NameEmailForm(FlaskForm):
 
 # ----- App -----
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dev-secret-change-me'   # needed for CSRF + flash
+app.config['SECRET_KEY'] = 'dev-secret-change-me'   
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 
@@ -23,7 +23,6 @@ moment = Moment(app)
 def index():
     form = NameEmailForm()
     if form.validate_on_submit():
-        # flash if user changed values (like in the book)
         old_name = session.get('name')
         old_email = session.get('email')
         if old_name and old_name != form.name.data:
@@ -31,13 +30,11 @@ def index():
         if old_email and old_email != form.email.data:
             flash('Looks like you have changed your email!')
 
-        # save current values in session
         session['name'] = form.name.data.strip()
         session['email'] = form.email.data.strip()
 
         is_uoft = 'utoronto' in session['email'].lower()
 
-        # render the result on the same page
         return render_template(
             'index.html',
             form=form,
@@ -47,7 +44,6 @@ def index():
             current_time=datetime.now(timezone.utc),
         )
 
-    # first GET or validation errors
     return render_template(
         'index.html',
         form=form,
@@ -58,4 +54,4 @@ def index():
     )
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
